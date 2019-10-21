@@ -1,6 +1,7 @@
 TYPE = GPU
 IMAGE_NAME = $(USER)-lab-image
 CONTAINER_NAME = $(USER)-lab-container
+NVIDIA_DOCKER_CMD = docker  # nvidia-docker is old.
 
 .PHONY: build
 build:
@@ -8,10 +9,10 @@ build:
 
 .PHONY: run
 run:
-	nvidia-docker run -itd --name $(CONTAINER_NAME) \
+	$(NVIDIA_DOCKER_CMD) run -itd --name $(CONTAINER_NAME) \
 	-v $(HOST_DIRECTORY):/code \
 	-p $(HOST_PORT):8888 $(IMAGE_NAME) \
-	jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --notebook-dir=/code
+	jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --notebook-dir=/code
 
 .PHONY: exec
 exec:
@@ -22,11 +23,11 @@ exec:
 all-clean:
 	make stop
 	make container-clean
-	docker rmi `docker images -q kajyuuen-lab-image`
+	make image-clean
 
 .PHONY: image-clean
 image-clean:
-	docker rmi `docker images -q kajyuuen-lab-image`
+	docker rmi `docker images -q $(IMAGE_NAME)`
 
 .PHONY: container-clean
 container-clean:
@@ -46,5 +47,5 @@ config:
 	@echo TYPE: $(TYPE)
 	@echo IMAGE_NAME: $(IMAGE_NAME)
 	@echo CONTAINER_NAME: $(CONTAINER_NAME)
-	@echo CONTAINER_DIRECTORY: $(CONTAINER_DIRECTORY)
+	@echo HOST_DIRECTORY: $(HOST_DIRECTORY)
 	@echo HOST_PORT: $(HOST_PORT)
