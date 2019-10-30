@@ -1,22 +1,24 @@
 # https://hub.docker.com/r/nvidia/cuda
-FROM nvidia/cuda:10.1-devel-ubuntu18.04
+FROM nvidia/cuda:10.1-runtime-ubuntu18.04
 LABEL maintainer "NVIDIA CORPORATION <cudatools@nvidia.com>"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        cuda-nvml-dev-$CUDA_PKG_VERSION \
+        cuda-command-line-tools-$CUDA_PKG_VERSION \
+cuda-libraries-dev-$CUDA_PKG_VERSION \
+        cuda-minimal-build-$CUDA_PKG_VERSION \
+        libnccl-dev=$NCCL_VERSION-1+cuda10.1 \
+&& \
+    rm -rf /var/lib/apt/lists/*
+
+ENV LIBRARY_PATH /usr/local/cuda/lib64/stubs
+
 # https://qiita.com/yagince/items/deba267f789604643bab
 ENV DEBIAN_FRONTEND=noninteractive
-
-ENV CUDNN_VERSION 7.6.4.38
-LABEL com.nvidia.cudnn.version="${CUDNN_VERSION}"
 
 # https://github.com/phusion/baseimage-docker/issues/319#issuecomment-262550835
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends apt-utils
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libcudnn7=$CUDNN_VERSION-1+cuda10.1 \
-libcudnn7-dev=$CUDNN_VERSION-1+cuda10.1 \
-&& \
-    apt-mark hold libcudnn7
-    # rm -rf /var/lib/apt/lists/*
 
 ENV PYENV_ROOT /root/.pyenv
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH

@@ -1,7 +1,7 @@
 TYPE = GPU
 IMAGE_NAME = $(USER)-lab-image
 CONTAINER_NAME = $(USER)-lab-container
-NVIDIA_DOCKER_CMD = docker  # nvidia-docker is old.
+NVIDIA_DOCKER_CMD = docker  # nvidia-docker is old. should use with `--gpus all`
 
 .PHONY: build
 build:
@@ -9,7 +9,7 @@ build:
 
 .PHONY: run
 run:
-	$(NVIDIA_DOCKER_CMD) run -itd --name $(CONTAINER_NAME) \
+	$(NVIDIA_DOCKER_CMD) run -itd --gpus all --name $(CONTAINER_NAME) \
 	-v $(HOST_DIRECTORY):/code \
 	-p $(HOST_PORT):8888 $(IMAGE_NAME) \
 	jupyter lab --ip=0.0.0.0 --port=8888 --allow-root --notebook-dir=/code
