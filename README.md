@@ -12,7 +12,7 @@ $ make build
 ## run
 
 ```
-$ HOST_DIRECTORY = <your code directory absolute path> make run
+$ HOST_DIR=<your code directory absolute path> make run
 ```
 
 ## exec
