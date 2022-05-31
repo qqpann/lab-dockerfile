@@ -39,7 +39,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          tk-dev libgdbm-dev \
          libc6-dev \
          libbz2-dev \
-         libpng-dev && \
+         libpng-dev \ 
+         liblzma-dev && \
      rm -rf /var/lib/apt/lists/*
 
 # https://github.com/pyenv/pyenv-installer
